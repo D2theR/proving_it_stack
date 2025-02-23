@@ -1,0 +1,53 @@
+# version: "3.7"
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    env_file:
+      - ./env/portainer.env
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+
+  ignition:
+    image: inductiveautomation/ignition:latest
+    container_name: ignition
+    restart: unless-stopped
+    env_file:
+      - ./env/ignition.env
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./ignition_data:/var/lib/ignition/data
+
+  hivemq-edge:
+    image: hivemq/hivemq-edge:latest
+    container_name: hivemq-edge
+    restart: unless-stopped
+    env_file:
+      - ./env/hivemq-edge.env
+    ports:
+      - "1883:1883"  # MQTT
+      - "8080:8080"  # HTTP Web UI (if exposed)
+    volumes:
+      - ./hivemq_edge_data:/opt/hivemq-edge/data
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    restart: unless-stopped
+    env_file:
+      - ./env/node-red.env
+    ports:
+      - "1880:1880"
+    volumes:
+      - node-red-data:/data
+
+volumes:
+  portainer_data:
+  ignition_data:
+  hivemq_edge_data:
+  node-red-data:
